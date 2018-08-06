@@ -71,7 +71,7 @@ REQUEST_VOLTAGE.set_function(lambda: get_voltage() )
 def get_power():
     """ Get HS110 power """
     try:
-        return  received_data["emeter"]["get_realtime"]["power"]
+        return  received_data["emeter"]["get_realtime"]["power_mw"]
     except socket.error:
         quit("Could not connect to host " + ip + ":" + str(port))
         return 0
@@ -79,7 +79,7 @@ def get_power():
 def get_current():
     """ Get HS110 current """
     try:
-        return  received_data["emeter"]["get_realtime"]["current"]
+        return  received_data["emeter"]["get_realtime"]["current_ma"]
     except socket.error:
         quit("Could not connect to host " + ip + ":" + str(port))
         return 0
@@ -87,7 +87,7 @@ def get_current():
 def get_voltage():
     """ Get HS110 voltage """
     try:
-        return  received_data["emeter"]["get_realtime"]["voltage"]
+        return  received_data["emeter"]["get_realtime"]["voltage_mv"]
     except socket.error:
         quit("Could not connect to host " + ip + ":" + str(port))
         return 0
