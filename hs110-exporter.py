@@ -6,6 +6,9 @@ import socket
 import argparse
 import json
 
+from struct import pack
+
+
 version = 0.58
 
 # Check if IP is valid
@@ -19,22 +22,22 @@ def validIP(ip):
 # Encryption and Decryption of TP-Link Smart Home Protocol
 # XOR Autokey Cipher with starting key = 171
 def encrypt(string):
-    key = 171
-    result = "\0\0\0\0"
-    for i in string:
-        a = key ^ ord(i)
-        key = a
-        result += chr(a)
-    return result
+        key = 171
+        result = pack('>I', len(string))
+        for i in string:
+                a = key ^ ord(i)
+                key = a
+                result += chr(a)
+        return result
 
 def decrypt(string):
-    key = 171
-    result = ""
-    for i in string:
-        a = key ^ ord(i)
-        key = ord(i)
-        result += chr(a)
-    return result
+        key = 171
+        result = ""
+        for i in string:
+                a = key ^ ord(i)
+                key = ord(i)
+                result += chr(a)
+        return result
 
 # Parse commandline arguments
 parser = argparse.ArgumentParser(description="TP-Link Wi-Fi Smart Plug Prometheus exporter v" + str(version))
@@ -107,7 +110,8 @@ if __name__ == '__main__':
             # Sample return value received:
             # {"emeter":{"get_realtime":{"current":1.543330,"voltage":235.627293,"power":348.994080,"total":9.737000,"err_code":0}}}
             received_data = json.loads(decrypt(data[4:]))
-            print "IP: " + ip + ":" + str(port) + " Received power: " + str(received_data["emeter"]["get_realtime"]["power"])
+            print received_data
+            print "IP: " + ip + ":" + str(port) + " Received power: " + str(received_data["emeter"]["get_realtime"]["power_mw"])
         except socket.error:
             print "Could not connect to the host "+ ip + ":" + str(port)
         except ValueError:
