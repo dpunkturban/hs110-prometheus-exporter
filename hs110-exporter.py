@@ -62,11 +62,15 @@ received_data = {"emeter":{"get_realtime":{"current":0.0,"voltage":0.0,"power":0
 REQUEST_POWER   = Gauge('hs110_power_watt', 'HS110 Watt measure')
 REQUEST_CURRENT = Gauge('hs110_current', 'HS110 Current measure')
 REQUEST_VOLTAGE = Gauge('hs110_voltage', 'HS110 Voltage measure')
+REQUEST_TOTAL = Gauge('hs110_total', 'HS110 Total measure')
+
 
 
 REQUEST_POWER.set_function(lambda: get_power() )
 REQUEST_CURRENT.set_function(lambda: get_current() )
 REQUEST_VOLTAGE.set_function(lambda: get_voltage() )
+REQUEST_TOTAL.set_function(lambda: get_total() )
+
 
 def get_power():
     """ Get HS110 power """
@@ -91,6 +95,16 @@ def get_voltage():
     except socket.error:
         quit("Could not connect to host " + ip + ":" + str(port))
         return 0
+
+def get_total():
+    """ Get HS110 total """
+    try:
+        return  received_data["emeter"]["get_realtime"]["total_wh"]
+    except socket.error:
+        quit("Could not connect to host " + ip + ":" + str(port))
+        return 0
+
+
 
 # Main entry point
 if __name__ == '__main__':
